@@ -4,8 +4,9 @@ Writes a single deadpan sentence explaining the modern internet to a
 person who has just stepped out of the year 1800, using only things
 such a person already knows: roads, wires, libraries, post offices,
 letters, ink, and the evening gossip of idle men. No modern words, no
-list of features, just one picture -- a road that shrinks the oceans --
-and a shrug at what strangers do with it.
+list of features, just one picture -- a road of wires linking every
+library and post office on earth, so a letter reaches the far side
+before the ink dries -- and a shrug at what men do with it.
 """
 
 import os
@@ -40,6 +41,8 @@ def validate(line: str) -> None:
     stripped = line.strip()
     if not stripped:
         raise ValueError("line must not be blank")
+    if "  " in stripped:
+        raise ValueError("line must not contain double spaces")
     if len(line) > MAX_CHARS:
         raise ValueError(f"line is {len(line)} chars, over the {MAX_CHARS} limit")
     if stripped.count(".") != 1 or not stripped.endswith("."):
