@@ -3,25 +3,40 @@
 Writes a single deadpan sentence explaining the modern internet to a
 person who has just stepped out of the year 1800, using only things
 such a person already knows: roads, wires, libraries, post offices,
-market stalls, letters, and ink. No modern words, no list of features,
-just one picture -- a road that shrinks the oceans -- and a shrug at
-what strangers do with it.
+letters, ink, and the evening gossip of idle men. No modern words, no
+list of features, just one picture -- a road that shrinks the oceans --
+and a shrug at what strangers do with it.
 """
 
 import os
+import re
 
 LINE = (
-    "It is a road of thin wires joining every library, post office, "
-    "and market stall on earth, so a letter arrives before the ink "
-    "dries, and strangers gossip at one table though oceans apart."
+    "A road of wires links every library and post office on earth, "
+    "so a letter reaches the far side before the ink dries, and men "
+    "still waste their evenings gossiping over it."
 )
 
 
 MAX_CHARS = 200
 
+# Words coined after 1800 that a traveler of that year could not know.
+# The sentence must stay free of them so the picture stays in-period.
+FORBIDDEN_WORDS = (
+    "internet",
+    "computer",
+    "website",
+    "email",
+    "online",
+    "digital",
+    "screen",
+    "phone",
+)
+
 
 def validate(line: str) -> None:
-    """Enforce the kit gate: one sentence, 1-200 chars, no blank text."""
+    """Enforce the kit gate: one sentence, 1-200 chars, no blank text,
+    and no word a person of 1800 could not know."""
     stripped = line.strip()
     if not stripped:
         raise ValueError("line must not be blank")
@@ -29,6 +44,10 @@ def validate(line: str) -> None:
         raise ValueError(f"line is {len(line)} chars, over the {MAX_CHARS} limit")
     if stripped.count(".") != 1 or not stripped.endswith("."):
         raise ValueError("line must be exactly one sentence")
+    words = set(re.findall(r"[a-z]+", stripped.lower()))
+    bad = sorted(words & set(FORBIDDEN_WORDS))
+    if bad:
+        raise ValueError(f"line uses modern words: {', '.join(bad)}")
 
 
 def main() -> None:
